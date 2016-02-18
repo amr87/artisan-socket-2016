@@ -1,18 +1,52 @@
-var io = require('socket.io')(3000);
-var adapter = require('socket.io-redis');
-var redis = require('redis');
-io.adapter(adapter({ host: 'localhost', port: 6379 }));
+var server = require('http').Server();
 
-var client = redis.createClient();
+var io = require('socket.io')(server);
 
-client.subscribe('user-login');
+var Redis = require('ioredis');
+
+var redis = new Redis();
+
+redis.subscribe('user-login');
+redis.subscribe('user-update');
+
+io.on('connection', function (socket) {
+
+    socket.on('sendId', function (data) {
+        
+        io.to(socket.id).emit('user-login', {
+            user_id: data.id,
+            client_id: socket.id
+
+        });
+    });
+
+    redis.on('message', function (channel, message) {
+
+        var data = JSON.parse(message);
+
+        if (channel == 'user-login') {
+
+           // console.log(' Login Operation ---> ' + socket.id);
+
+            io.to(socket.id).emit('user-login', {
+                user_id: data.id,
+                client_id: socket.id
+            });
+
+        } else if (channel == 'user-update') {
+
+            //console.log('Update Operation ---> ' + data.client_id);
+
+            io.to(data.client_id).emit('user-update', message);
+
+        }
+
+    });
 
 
-io.sockets.on('connection', function (socket) {
-      
-client.on('message',function(channel,message){
-
-	socket.emit('user-login',message);
-
-	});
 });
+
+
+
+
+server.listen(3000);
