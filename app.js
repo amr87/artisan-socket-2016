@@ -26,7 +26,7 @@ io.on('connection', function (socket) {
 
         if (channel == 'user-login') {
 
-           // console.log(' Login Operation ---> ' + socket.id);
+            console.log(' Login Operation ---> ' + socket.id);
 
             io.to(socket.id).emit('user-login', {
                 user_id: data.id,
@@ -35,7 +35,7 @@ io.on('connection', function (socket) {
 
         } else if (channel == 'user-update') {
 
-            //console.log('Update Operation ---> ' + data.client_id);
+            console.log('Update Operation ---> ' + data.client_id);
 
             io.to(data.client_id).emit('user-update', message);
 
