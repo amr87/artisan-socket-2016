@@ -25,9 +25,7 @@ io.on('connection', function (socket) {
         var data = JSON.parse(message);
 
         if (channel == 'user-login') {
-
-            console.log(' Login Operation ---> ' + socket.id);
-
+            
             io.to(socket.id).emit('user-login', {
                 user_id: data.id,
                 client_id: socket.id
@@ -35,8 +33,7 @@ io.on('connection', function (socket) {
 
         } else if (channel == 'user-update') {
 
-            console.log('Update Operation ---> ' + data.client_id);
-
+           
             io.to(data.client_id).emit('user-update', message);
 
         }
@@ -49,4 +46,4 @@ io.on('connection', function (socket) {
 
 
 
-server.listen(3000);
+server.listen(8000);
