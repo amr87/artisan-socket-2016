@@ -13,7 +13,7 @@ redis.subscribe('user-ban');
 io.on('connection', function (socket) {
 
     socket.on('sendId', function (data) {
-        
+
         io.to(socket.id).emit('user-login', {
             user_id: data.id,
             client_id: socket.id
@@ -36,9 +36,9 @@ io.on('connection', function (socket) {
 
             io.to(data.client_id).emit('user-update', message);
 
-        } else if(channel == 'user-ban'){
+        } else if (channel == 'user-ban') {
 
-			io.to(data.client_id).emit('user-ban', message);
+            io.to(data.client_id).emit('user-ban', message);
 
         }
 
@@ -48,4 +48,4 @@ io.on('connection', function (socket) {
 });
 
 
-server.listen(3000);
+server.listen(8000);
