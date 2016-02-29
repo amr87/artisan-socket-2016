@@ -9,7 +9,11 @@
   "dependencies":{
             "socket.io" : "*",
             "redis":"*",
-            "ioredis":"*"
+            "ioredis":"*",
+            "cookie":"0.2.3",
+            "mcrypt":"*",
+            "php-unserialize":"*"
+
   	},
   "author": "Amr Gamal",
   "license": "ISC"
