@@ -23,13 +23,12 @@ io.on('connection', function (socket) {
 
         client[data.id] = socket.id;
         client["name"] = data.name;
-
-        var flag = _.indexOf(getKeys(clients), data.id) != -1 ? true : false;
+        client["avatar"] = data.avatar;
 
         io.to(socket.id).emit('user-login', {
             user_id: data.id,
-            client_id: socket.id,
-            multiple: flag
+            client_id: socket.id
+           
         });
 
 
@@ -40,8 +39,9 @@ io.on('connection', function (socket) {
             clients.push(client);
 
         } else {
-
-            clients[index][data.id] = socket.id;
+            
+            if(typeof(clients[index]) != "undefined")
+                clients[index][data.id] = socket.id;
 
         }
         
@@ -55,26 +55,13 @@ io.on('connection', function (socket) {
 
         if (channel == 'user-login') {
 
-            var repeatedIndex = _.indexOf(getKeys(clients), data.id);
-            
-            console.log(getKeys(clients));
-
-            var flag = repeatedIndex != -1 ? true : false;
-
-
 
             io.to(socket.id).emit('user-login', {
                 user_id: data.id,
-                client_id: socket.id,
-                 multiple: true
+                client_id: socket.id
             });
 
            
-                io.to(getValues([clients[repeatedIndex]])[0]).emit('user-login', {
-                    user_id: data.id,
-                    client_id: socket.id,
-                 
-                });
 
 
         } else if (channel == 'user-update') {
