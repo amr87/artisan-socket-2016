@@ -4,7 +4,7 @@ var io = require('socket.io')(server);
 
 var Redis = require('ioredis');
 
-var _ = require('./underscore'); 
+var _ = require('./underscore');
 
 
 var redis = new Redis();
@@ -14,11 +14,13 @@ var clients;
 redis.subscribe('user-login');
 redis.subscribe('user-update');
 redis.subscribe('user-ban');
+
+
 clients = [];
 io.on('connection', function (socket) {
 
     socket.on('sendId', function (data) {
-
+       
         var client = {};
 
         client[data.id] = socket.id;
@@ -28,7 +30,7 @@ io.on('connection', function (socket) {
         io.to(socket.id).emit('user-login', {
             user_id: data.id,
             client_id: socket.id
-           
+
         });
 
 
@@ -39,12 +41,12 @@ io.on('connection', function (socket) {
             clients.push(client);
 
         } else {
-            
-            if(typeof(clients[index]) != "undefined")
+
+            if (typeof (clients[index]) != "undefined")
                 clients[index][data.id] = socket.id;
 
         }
-        
+
         if (clients.length)
             io.emit('connectedUser', {users: clients});
     });
@@ -55,13 +57,12 @@ io.on('connection', function (socket) {
 
         if (channel == 'user-login') {
 
-
             io.to(socket.id).emit('user-login', {
                 user_id: data.id,
                 client_id: socket.id
             });
 
-           
+
 
 
         } else if (channel == 'user-update') {
@@ -78,19 +79,36 @@ io.on('connection', function (socket) {
 
 
 
+    socket.on('error', function (err) {
+        if (err.description)
+            throw err.description;
+        else
+            throw err; // Or whatever you want to do
+    });
+
+    socket.on('message', function (data) {
+
+
+        var client = getClient(data.user_id,clients);
+        if(client != "")
+            io.to(client).emit('message', data);
+    });
+
     socket.on('disconnect', function () {
 
+
         for (var i = 0; i < clients.length; i++) {
-            
+
             var sid = _.values(clients[i])[0];
-            
-            if (sid == socket.id)               
+
+            if (sid == socket.id)
                 clients.splice(i, 1);
         }
-        
+
         io.emit('connectedUser', {users: clients});
 
     })
+
 });
 
 
@@ -110,4 +128,14 @@ function getValues(arrofObj) {
         ret.push(_.values(arrofObj[i]));
     }
     return _.flatten(ret);
+}
+
+function getClient(id, arrofObj) {
+    var ret = "";
+    for (var i = 0; i < arrofObj.length; i++) {
+
+        if (typeof (arrofObj[i][id]) != "undefined")
+            ret = arrofObj[i][id];
+    }
+    return ret;
 }
