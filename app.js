@@ -9,18 +9,16 @@ var _ = require('./underscore');
 
 var redis = new Redis();
 
-var clients;
+var clients = [];
 
 redis.subscribe('user-login');
 redis.subscribe('user-update');
 redis.subscribe('user-ban');
 
-
-clients = [];
 io.on('connection', function (socket) {
 
     socket.on('sendId', function (data) {
-       
+
         var client = {};
 
         client[data.id] = socket.id;
@@ -51,54 +49,23 @@ io.on('connection', function (socket) {
             io.emit('connectedUser', {users: clients});
     });
 
-    redis.on('message', function (channel, message) {
 
-        var data = JSON.parse(message);
-
-        if (channel == 'user-login') {
-
-            io.to(socket.id).emit('user-login', {
-                user_id: data.id,
-                client_id: socket.id
-            });
-
-
-
-
-        } else if (channel == 'user-update') {
-
-            io.to(data.client_id).emit('user-update', message);
-
-        } else if (channel == 'user-ban') {
-
-
-     	   io.to(data.client_id).emit('user-ban', message);
-
-        }
-
-    });
-
-
-
-    socket.on('error', function (err) {
-        if (err.description)
-            throw err.description;
-        else
-            throw err; // Or whatever you want to do
-    });
 
     socket.on('message', function (data) {
 
 
-        var client = getClient(data.user_id,clients);
-        if(client != "")
+        var client = getClient(data.user_id, clients);
+        if (client != "")
             io.to(client).emit('message', data);
     });
 
     socket.on('disconnect', function () {
 
-
         for (var i = 0; i < clients.length; i++) {
+
+
+
+     	   io.to(data.client_id).emit('user-ban', message);
 
             var sid = _.values(clients[i])[0];
 
@@ -109,6 +76,30 @@ io.on('connection', function (socket) {
         io.emit('connectedUser', {users: clients});
 
     })
+
+});
+
+redis.on('message', function (channel, message) {
+
+    var data = JSON.parse(message);
+
+    if (channel == 'user-login') {
+
+        io.to(socket.id).emit('user-login', {
+            user_id: data.id,
+            client_id: socket.id
+        });
+
+
+    } else if (channel == 'user-update') {
+
+        io.to(data.client_id).emit('user-update', message);
+
+    } else if (channel == 'user-ban') {
+
+        io.to(data.client_id).emit('user-ban', message);
+
+    }
 
 });
 
