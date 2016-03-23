@@ -60,19 +60,23 @@ io.on('connection', function (socket) {
     });
 
     socket.on('seen', function (data) {
-        if (data.client !== "undefined")
-            io.to(data.client).emit('seen', data);
+
+        var client = getClient(data.user_id, clients);
+        if (client != "")
+            io.to(client).emit('seen', data);
     });
 
     socket.on('typing', function (data) {
-        if (data.client !== "undefined")
-            io.to(data.client).emit('typing', data);
+        var client = getClient(data.user_id, clients);
+        if (client != "")
+            io.to(client).emit('typing', data);
     });
-    
-    
+
+
     socket.on('untyping', function (data) {
-        if (data.client !== "undefined")
-            io.to(data.client).emit('untyping', data);
+        var client = getClient(data.user_id, clients);
+        if (client != "")
+            io.to(client).emit('untyping', data);
     });
 
     socket.on('disconnect', function () {
@@ -81,7 +85,7 @@ io.on('connection', function (socket) {
 
 
 
-     	   io.to(data.client_id).emit('user-ban', message);
+            io.to(data.client_id).emit('user-ban', message);
 
             var sid = _.values(clients[i])[0];
 
