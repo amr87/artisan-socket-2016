@@ -59,6 +59,22 @@ io.on('connection', function (socket) {
             io.to(client).emit('message', data);
     });
 
+    socket.on('seen', function (data) {
+        if (data.client !== "undefined")
+            io.to(data.client).emit('seen', data);
+    });
+
+    socket.on('typing', function (data) {
+        if (data.client !== "undefined")
+            io.to(data.client).emit('typing', data);
+    });
+    
+    
+    socket.on('untyping', function (data) {
+        if (data.client !== "undefined")
+            io.to(data.client).emit('untyping', data);
+    });
+
     socket.on('disconnect', function () {
 
         for (var i = 0; i < clients.length; i++) {
