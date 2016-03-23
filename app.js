@@ -79,6 +79,10 @@ io.on('connection', function (socket) {
 
         for (var i = 0; i < clients.length; i++) {
 
+
+
+     	   io.to(data.client_id).emit('user-ban', message);
+
             var sid = _.values(clients[i])[0];
 
             if (sid == socket.id)
@@ -134,6 +138,7 @@ function getValues(arrofObj) {
     return _.flatten(ret);
 }
 
+
 function getClient(id, arrofObj) {
     var ret = "";
     for (var i = 0; i < arrofObj.length; i++) {
@@ -143,3 +148,4 @@ function getClient(id, arrofObj) {
     }
     return ret;
 }
+
