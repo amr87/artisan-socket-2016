@@ -60,27 +60,40 @@ io.on('connection', function (socket) {
     });
 
     socket.on('seen', function (data) {
+        console.log(data);
         if (typeof (data) != "undefined") {
-            var client = getClient(data.user_id, clients);
-            if (client != "")
+            var client = getClient(data.target_id, clients);
+            if (client != "") {
                 io.to(client).emit('seen', data);
+            } else {
+                if (typeof (data.client) != "undefined")
+                    io.to(data.client).emit('seen', data);
+            }
         }
     });
 
     socket.on('typing', function (data) {
         if (typeof (data) != "undefined") {
-            var client = getClient(data.user_id, clients);
-            if (client != "")
+            var client = getClient(data.target_id, clients);
+            if (client != "") {
                 io.to(client).emit('typing', data);
+            } else {
+                if (typeof (data.client) != "undefined")
+                    io.to(data.client).emit('typing', data);
+            }
         }
     });
 
 
     socket.on('untyping', function (data) {
         if (typeof (data) != "undefined") {
-            var client = getClient(data.user_id, clients);
-            if (client != "")
+            var client = getClient(data.target_id, clients);
+            if (client != "") {
                 io.to(client).emit('untyping', data);
+            } else {
+                if (typeof (data.client) != "undefined")
+                    io.to(data.client).emit('untyping', data);
+            }
         }
     });
 
