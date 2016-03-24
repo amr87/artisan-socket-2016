@@ -60,32 +60,33 @@ io.on('connection', function (socket) {
     });
 
     socket.on('seen', function (data) {
-
-        var client = getClient(data.user_id, clients);
-        if (client != "")
-            io.to(client).emit('seen', data);
+        if (typeof (data) != "undefined") {
+            var client = getClient(data.user_id, clients);
+            if (client != "")
+                io.to(client).emit('seen', data);
+        }
     });
 
     socket.on('typing', function (data) {
-        var client = getClient(data.user_id, clients);
-        if (client != "")
-            io.to(client).emit('typing', data);
+        if (typeof (data) != "undefined") {
+            var client = getClient(data.user_id, clients);
+            if (client != "")
+                io.to(client).emit('typing', data);
+        }
     });
 
 
     socket.on('untyping', function (data) {
-        var client = getClient(data.user_id, clients);
-        if (client != "")
-            io.to(client).emit('untyping', data);
+        if (typeof (data) != "undefined") {
+            var client = getClient(data.user_id, clients);
+            if (client != "")
+                io.to(client).emit('untyping', data);
+        }
     });
 
     socket.on('disconnect', function () {
 
         for (var i = 0; i < clients.length; i++) {
-
-
-
-            io.to(data.client_id).emit('user-ban', message);
 
             var sid = _.values(clients[i])[0];
 
@@ -100,6 +101,8 @@ io.on('connection', function (socket) {
 });
 
 redis.on('message', function (channel, message) {
+
+    console.log(message);
 
     var data = JSON.parse(message);
 
