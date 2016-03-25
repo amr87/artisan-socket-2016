@@ -60,7 +60,6 @@ io.on('connection', function (socket) {
     });
 
     socket.on('seen', function (data) {
-        console.log(data);
         if (typeof (data) != "undefined") {
             var client = getClient(data.target_id, clients);
             if (client != "") {
@@ -114,8 +113,6 @@ io.on('connection', function (socket) {
 });
 
 redis.on('message', function (channel, message) {
-
-    console.log(message);
 
     var data = JSON.parse(message);
 
