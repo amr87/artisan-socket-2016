@@ -137,7 +137,7 @@ redis.on('message', function (channel, message) {
 });
 
 
-server.listen(8000);
+server.listen(3000);
 
 function getKeys(arrofObj) {
     var ret = [];
