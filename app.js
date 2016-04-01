@@ -106,7 +106,7 @@ io.on('connection', function (socket) {
                 clients.splice(i, 1);
         }
 
-        io.emit('connectedUser', {users: clients});
+        io.emit('connectedUser', {users: clients , client:socket.id});
 
     })
 
